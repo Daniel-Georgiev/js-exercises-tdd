@@ -24,6 +24,7 @@ test("Paint shop", function() {
 
   var output = paintShop(cars, "Pink");
 
+  console.log(cars)
   expect(output).toEqual(repaintedCars);
   expect(cars).toEqual(unpaintedCars);
 });

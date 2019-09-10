@@ -22,27 +22,36 @@ module.exports = function(input){
     ]
 
     const validateUri = (uri) => {
-        if(uri.match(/^([a-z\.\*])*/g)[0] !== ''){
-            console.log(uri.match(/^([a-z\.\*])*/))
+        if(uri.match(/([a-z]*\.[a-z]*)|\*/g)){
             return true;
         }
-        if(uri.match(/[<>\\&'"]*/g)){
-            return false
-        }
+        return false
+    }
+
+    const checkForSpecialChars = (message) => {
+        const a = specialChars.some(char => {
+            return message.includes(char);
+         })
+       return a;
     }
 
     if(input){
         const isUriValid = validateUri(input.uri);
-        console.log(input.uri, isUriValid)
-
+        let isMessageValid = input.message && !checkForSpecialChars(input.message);
+        if(input.message === ''){
+            isMessageValid = true;
+        }
         if(!input.method || !methods.includes(input.method)){
-            throw new Error('Invalid request header: Invalid Method')
+            throw new Error('Invalid request header: Invalid Method');
         }
         if(!input.uri || !isUriValid){
-            throw new Error('Invalid request header: Invalid Uri')
+            throw new Error('Invalid request header: Invalid Uri');
         }
         if(!input.version || !versions.includes(input.version)){
-            throw new Error('Invalid request header: Invalid Version')
+            throw new Error('Invalid request header: Invalid Version');
+        }
+        if(input.message === undefined || !isMessageValid){
+            throw new Error('Invalid request header: Invalid Message');
         }
 
         return input;

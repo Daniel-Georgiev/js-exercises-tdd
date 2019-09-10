@@ -96,3 +96,56 @@ test('uri should count as valid if it is *', function(){
 
     expect(result).toEqual(input);
 })
+
+test('should throw an error if uri is empty', function(){
+    const input = {
+        method: 'GET',
+        uri: '',
+        version: 'HTTP/2.0',
+        message: ''
+    }
+
+
+    expect(() => {
+        validate(input)
+    }).toThrow(new Error('Invalid request header: Invalid Uri'));
+})
+
+test('shoult throw an error if message property does not exist', function(){
+    const input = {
+        method: 'GET',
+        uri: '*',
+        version: 'HTTP/2.0',
+    }
+
+
+    expect(() => {
+        validate(input)
+    }).toThrow(new Error('Invalid request header: Invalid Message'));
+})
+
+test('shoult return the request if message is empty', function(){
+    const input = {
+        method: 'GET',
+        uri: '*',
+        version: 'HTTP/2.0',
+        message: ''
+    }
+
+    const result = validate(input);
+    expect(result).toEqual(input);
+})
+
+test('shoult throw an error if message property has special chars', function(){
+    const input = {
+        method: 'GET',
+        uri: '*',
+        version: 'HTTP/2.0',
+        message: '"value"'
+    }
+
+
+    expect(() => {
+        validate(input)
+    }).toThrow(new Error('Invalid request header: Invalid Message'));
+})
